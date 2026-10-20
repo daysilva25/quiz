@@ -12,72 +12,155 @@ st.set_page_config(
     layout="centered"
 )
 
-# --- ESTILO VISUAL COM CORES SUAVES (DESIGN EDITORIAL) ---
+# --- FORÇA TEMA CLARO, FUNDO BRANCO E CONTRASTE MÁXIMO ---
 st.markdown("""
 <style>
-    .stApp {
-        background: radial-gradient(circle at 50% 0%, #F5F3FF 0%, #F8FAFC 60%, #E2E8F0 100%);
-        color: #1E293B;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    /* Força fundo claro e texto escuro em TODA a aplicação */
+    html, body, [data-testid="stAppViewContainer"], .stApp, main {
+        background-color: #F8FAFC !important;
+        background: #F8FAFC !important;
+        color: #0F172A !important;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
     }
 
-    h1, h2, h3, h4 {
-        color: #1E293B !important;
+    [data-testid="stHeader"] {
+        background-color: #F8FAFC !important;
+    }
+
+    /* Títulos em Preto / Ardósia de Alta Legibilidade */
+    h1, h2, h3, h4, [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 {
+        color: #0F172A !important;
         font-weight: 800 !important;
-        letter-spacing: -0.5px;
+        letter-spacing: -0.5px !important;
     }
 
-    /* Card Suave com Sombra Delicada */
-    .soft-card {
-        background: rgba(255, 255, 255, 0.95);
-        border: 1px solid #E2E8F0;
-        border-radius: 18px;
-        padding: 1.5rem;
-        box-shadow: 0 10px 25px -5px rgba(100, 116, 139, 0.08);
-        margin-bottom: 1.25rem;
+    /* Todos os textos normais em escuro nítido */
+    p, span, label, div, [data-testid="stMarkdownContainer"] p {
+        color: #1E293B !important;
     }
 
-    /* Pílula de Tema Suave */
-    .theme-pill {
-        background: rgba(139, 92, 246, 0.12);
-        border: 1px solid rgba(139, 92, 246, 0.25);
-        color: #6D28D9;
-        padding: 0.3rem 0.9rem;
-        border-radius: 9999px;
-        font-size: 0.82rem;
-        font-weight: 700;
-        display: inline-block;
-        margin-bottom: 0.5rem;
+    /* Card da Pergunta e Informações em Branco Puro */
+    .white-card {
+        background-color: #FFFFFF !important;
+        border: 2px solid #E2E8F0 !important;
+        border-radius: 18px !important;
+        padding: 1.5rem !important;
+        margin-bottom: 1.25rem !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04) !important;
     }
 
-    /* Pódio dos Campeões */
+    /* Pílula de Tema */
+    .theme-badge {
+        background-color: #EDE9FE !important;
+        border: 1px solid #DDD6FE !important;
+        color: #6D28D9 !important;
+        padding: 0.35rem 0.9rem !important;
+        border-radius: 9999px !important;
+        font-size: 0.85rem !important;
+        font-weight: 700 !important;
+        display: inline-block !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    /* BOTÕES DAS ALTERNATIVAS: BRANCOS, GRANDES E TEXTO ESCURO NÍTIDO */
+    .stButton > button {
+        background-color: #FFFFFF !important;
+        border: 2px solid #CBD5E1 !important;
+        border-radius: 14px !important;
+        padding: 1rem 1.25rem !important;
+        min-height: 58px !important;
+        text-align: left !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+        transition: all 0.2s ease !important;
+        width: 100% !important;
+    }
+
+    .stButton > button:hover {
+        background-color: #F1F5F9 !important;
+        border-color: #7C3AED !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 15px rgba(124, 58, 237, 0.12) !important;
+    }
+
+    /* FORÇA A COR DO TEXTO DENTRO DOS BOTÕES A SER ESCURA */
+    .stButton > button p, .stButton > button div, .stButton > button span {
+        color: #0F172A !important;
+        font-size: 1.15rem !important;
+        font-weight: 700 !important;
+        line-height: 1.4 !important;
+        text-align: left !important;
+    }
+
+    /* Botão Principal Roxo (Entrar / Iniciar) */
+    .stButton > button[kind="primary"] {
+        background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%) !important;
+        border: none !important;
+        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3) !important;
+    }
+    .stButton > button[kind="primary"] p {
+        color: #FFFFFF !important;
+        font-weight: 800 !important;
+        font-size: 1.15rem !important;
+    }
+
+    /* Inputs de Texto */
+    [data-baseweb="input"], input {
+        background-color: #FFFFFF !important;
+        color: #0F172A !important;
+        border: 2px solid #CBD5E1 !important;
+        border-radius: 12px !important;
+        font-size: 1.1rem !important;
+        font-weight: 600 !important;
+    }
+    input::placeholder {
+        color: #94A3B8 !important;
+    }
+
+    /* Abas Superiores */
+    [data-baseweb="tab-list"] {
+        background-color: #E2E8F0 !important;
+        border-radius: 12px !important;
+        padding: 4px !important;
+        margin-bottom: 1.5rem !important;
+    }
+    [data-baseweb="tab"] {
+        color: #475569 !important;
+        font-weight: 700 !important;
+    }
+    [aria-selected="true"] {
+        background-color: #FFFFFF !important;
+        color: #7C3AED !important;
+        border-radius: 8px !important;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.06) !important;
+    }
+
+    /* Pódio */
     .podium-box {
-        background: #FFFFFF;
-        border: 1px solid #E2E8F0;
-        border-radius: 16px;
-        padding: 1.2rem;
-        text-align: center;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        background: #FFFFFF !important;
+        border: 2px solid #E2E8F0 !important;
+        border-radius: 16px !important;
+        padding: 1.2rem !important;
+        text-align: center !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.04) !important;
     }
-
-    .podium-gold { border-top: 6px solid #F59E0B; }
-    .podium-silver { border-top: 6px solid #94A3B8; }
-    .podium-bronze { border-top: 6px solid #FB923C; }
+    .podium-gold { border-top: 6px solid #F59E0B !important; }
+    .podium-silver { border-top: 6px solid #94A3B8 !important; }
+    .podium-bronze { border-top: 6px solid #FB923C !important; }
 
     /* Assinatura no Rodapé */
     .dev-signature {
-        text-align: center;
-        font-size: 0.8rem;
-        color: #94A3B8;
-        margin-top: 2.5rem;
-        padding-top: 1rem;
-        border-top: 1px solid #E2E8F0;
-        font-weight: 500;
+        text-align: center !important;
+        font-size: 0.82rem !important;
+        color: #94A3B8 !important;
+        margin-top: 2.5rem !important;
+        padding-top: 1rem !important;
+        border-top: 1px solid #E2E8F0 !important;
+        font-weight: 600 !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# --- BASE DE PERGUNTAS (EMBUTIDA NO PRÓPRIO CÓDIGO) ---
+# --- BASE DE PERGUNTAS (EMBUTIDA NO CÓDIGO) ---
 QUESTIONS = [
     {
         "theme": "Serigrafia",
@@ -161,18 +244,19 @@ tab_player, tab_host = st.tabs(["📱 Jogar pelo Celular", "🖥️ Telão do Ap
 # 1. ABA DO JOGADOR (CELULAR)
 # ==============================================================================
 with tab_player:
-    st.markdown('<div class="theme-pill">🎨 PRODUÇÃO GRÁFICA</div>', unsafe_allow_html=True)
+    st.markdown('<div class="theme-badge">🎨 PRODUÇÃO GRÁFICA</div>', unsafe_allow_html=True)
     st.title("Quiz de Fixação")
     st.caption("Serigrafia & Rotogravura")
 
     if "player_name" not in st.session_state:
         st.session_state["player_name"] = ""
 
+    # Identificação do Jogador
     if not st.session_state["player_name"]:
         st.markdown("""
-        <div class="soft-card">
-            <h4>Bem-vindo(a) ao Quiz! 👋</h4>
-            <p style="color: #64748B; font-size: 0.95rem;">Digite seu nome para participar:</p>
+        <div class="white-card">
+            <h3 style="margin-top: 0;">Bem-vindo(a) ao Quiz! 👋</h3>
+            <p style="color: #475569; font-size: 1rem; margin-bottom: 0;">Digite seu nome para participar:</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -189,33 +273,36 @@ with tab_player:
         player_name = st.session_state["player_name"]
         my_score = room["scores"].get(player_name, 0)
 
+        # Barra do Jogador
         col_p1, col_p2 = st.columns([2, 1])
         with col_p1:
-            st.write(f"👤 Jogador: **{player_name}**")
+            st.markdown(f"👤 Jogador: **{player_name}**")
         with col_p2:
-            st.write(f"⭐ **{my_score} pts**")
+            st.markdown(f"⭐ **{my_score} pts**")
 
+        # 1. Espera no Celular
         if room["state"] == "LOBBY":
             st.markdown("""
-            <div class="soft-card" style="text-align: center; padding: 2rem;">
-                <div style="font-size: 3rem;">✨</div>
-                <h3>Você está conectado!</h3>
-                <p style="color: #64748B;">Fique de olho no telão da sala. O quiz começará em instantes!</p>
+            <div class="white-card" style="text-align: center; padding: 2.5rem 1.5rem;">
+                <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">✨</div>
+                <h3 style="margin-bottom: 0.5rem;">Você está conectado!</h3>
+                <p style="color: #475569; font-size: 1.05rem;">Fique de olho no telão da sala. O quiz começará em instantes!</p>
             </div>
             """, unsafe_allow_html=True)
             if st.button("🔄 Atualizar status", use_container_width=True):
                 st.rerun()
 
+        # 2. Pergunta Ativa no Celular
         elif room["state"] in ["QUESTION", "REVEAL"]:
             q_idx = room["current_q"]
             if q_idx < len(QUESTIONS):
                 q = QUESTIONS[q_idx]
 
                 st.markdown(f"""
-                <div class="soft-card">
-                    <span class="theme-pill">{q['theme']}</span>
-                    <h4>Pergunta {q_idx + 1} de {len(QUESTIONS)}</h4>
-                    <p style="font-size: 1.15rem; font-weight: 700; color: #1E293B; margin-top: 0.5rem; line-height: 1.4;">
+                <div class="white-card">
+                    <span class="theme-badge">{q['theme']}</span>
+                    <h4 style="color: #6D28D9; margin-bottom: 0.3rem;">Pergunta {q_idx + 1} de {len(QUESTIONS)}</h4>
+                    <p style="font-size: 1.25rem; font-weight: 800; color: #0F172A; line-height: 1.45; margin: 0;">
                         {q['question']}
                     </p>
                 </div>
@@ -225,10 +312,11 @@ with tab_player:
                 already_answered = player_name in q_answers
 
                 if room["state"] == "QUESTION" and not already_answered:
-                    st.write("**Escolha sua alternativa:**")
-                    symbols = ["▲", "◆", "●", "■"]
+                    st.markdown("<p style='font-weight: 700; color: #0F172A; font-size: 1.05rem;'>Selecione a resposta correta:</p>", unsafe_allow_html=True)
+                    symbols = ["🔴 [A]", "🔵 [B]", "🟡 [C]", "🟢 [D]"]
                     for idx, opt_text in enumerate(q["options"]):
-                        if st.button(f"{symbols[idx]} {opt_text}", key=f"opt_btn_{idx}", use_container_width=True):
+                        btn_text = f"{symbols[idx]}  {opt_text}"
+                        if st.button(btn_text, key=f"opt_btn_{idx}", use_container_width=True):
                             elapsed = time.time() - room["q_start_time"]
                             remaining = max(0.0, 25.0 - elapsed)
                             is_correct = (idx == q["correct"])
@@ -248,7 +336,7 @@ with tab_player:
                 elif already_answered:
                     ans = q_answers[player_name]
                     if room["state"] == "QUESTION":
-                        st.info("✓ **Resposta enviada!** Aguardando o apresentador revelar no telão...")
+                        st.info("✓ **Resposta registrada com sucesso!** Aguardando o apresentador revelar no telão...")
                         if st.button("🔄 Atualizar tela", use_container_width=True):
                             st.rerun()
                     else:
@@ -259,21 +347,24 @@ with tab_player:
                             st.error("😅 **Não foi dessa vez!** (+0 pts)")
 
                         st.markdown(f"""
-                        <div class="soft-card" style="background: #F0FDF4; border-color: #BBF7D0;">
-                            <strong style="color: #166534;">💡 Explicação Didática:</strong>
-                            <p style="color: #15803D; margin-top: 0.3rem;">{q['explanation']}</p>
+                        <div class="white-card" style="background: #F0FDF4 !important; border: 2px solid #86EFAC !important;">
+                            <strong style="color: #15803D; font-size: 1.05rem;">💡 Explicação Didática:</strong>
+                            <p style="color: #166534 !important; margin-top: 0.4rem; font-size: 1rem; line-height: 1.45;">
+                                {q['explanation']}
+                            </p>
                         </div>
                         """, unsafe_allow_html=True)
 
                         if st.button("🔄 Próxima Rodada", use_container_width=True):
                             st.rerun()
 
+        # 3. Pódio Final no Celular
         elif room["state"] == "PODIUM":
             st.markdown("""
-            <div class="soft-card" style="text-align: center; padding: 2rem;">
-                <div style="font-size: 3.5rem;">🏆</div>
+            <div class="white-card" style="text-align: center; padding: 2.5rem 1.5rem;">
+                <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🏆</div>
                 <h2>Fim do Quiz!</h2>
-                <p style="color: #64748B;">Confira os grandes campeões no telão da apresentação!</p>
+                <p style="color: #475569; font-size: 1.05rem;">Confira os grandes campeões no telão da sala!</p>
             </div>
             """, unsafe_allow_html=True)
 
@@ -287,13 +378,13 @@ with tab_player:
 # 2. ABA DO TELÃO (APRESENTADOR)
 # ==============================================================================
 with tab_host:
-    st.markdown('<div class="theme-pill">🖥️ CONTROLE DO TELÃO</div>', unsafe_allow_html=True)
+    st.markdown('<div class="theme-badge">🖥️ CONTROLE DO TELÃO</div>', unsafe_allow_html=True)
     st.title("Painel do Apresentador")
 
     pin = st.text_input("Digite o PIN do Apresentador:", type="password", key="pin_host")
 
     if pin != "2026":
-        st.info("Digite o código PIN `2026` para gerenciar a sala no telão.")
+        st.info("Digite o código PIN `2026` para gerenciar a apresentação.")
     else:
         st.success("Modo Apresentador Liberado!")
 
@@ -321,13 +412,13 @@ with tab_host:
 
         if room["state"] == "LOBBY":
             st.markdown("""
-            <div class="soft-card" style="text-align: center;">
-                <h2>🎨 Quiz de Fixação: Serigrafia vs Rotogravura</h2>
-                <p style="color: #64748B; font-size: 1.1rem;">
-                    Aponte o celular ou abra a aba <b>"Jogar pelo Celular"</b> para participar!
+            <div class="white-card" style="text-align: center; padding: 2rem;">
+                <h2 style="margin-top: 0;">🎨 Quiz de Fixação: Serigrafia vs Rotogravura</h2>
+                <p style="color: #475569; font-size: 1.15rem; margin: 0.8rem 0;">
+                    Acessem pelo celular e entrem na aba <b>"📱 Jogar pelo Celular"</b>!
                 </p>
-                <div style="font-size: 1.4rem; font-weight: 800; color: #7C3AED; margin: 1rem 0;">
-                    Código da Sala: 2026
+                <div style="font-size: 1.4rem; font-weight: 800; color: #7C3AED; background: #EDE9FE; display: inline-block; padding: 0.5rem 1.5rem; border-radius: 12px; margin-top: 0.5rem;">
+                    Código PIN: 2026
                 </div>
             </div>
             """, unsafe_allow_html=True)
@@ -340,20 +431,20 @@ with tab_host:
         elif room["state"] in ["QUESTION", "REVEAL"]:
             q = QUESTIONS[room["current_q"]]
             st.markdown(f"""
-            <div class="soft-card">
-                <span class="theme-pill">{q['theme']}</span>
-                <h2>Pergunta {room['current_q'] + 1} de {len(QUESTIONS)}</h2>
-                <h3 style="color: #1E293B; line-height: 1.4; margin-top: 0.5rem;">{q['question']}</h3>
+            <div class="white-card">
+                <span class="theme-badge">{q['theme']}</span>
+                <h3 style="color: #6D28D9; margin-bottom: 0.3rem;">Pergunta {room['current_q'] + 1} de {len(QUESTIONS)}</h3>
+                <h2 style="color: #0F172A; line-height: 1.4; margin: 0;">{q['question']}</h2>
             </div>
             """, unsafe_allow_html=True)
 
+            symbols = ["🔴 [A]", "🔵 [B]", "🟡 [C]", "🟢 [D]"]
             for idx, opt in enumerate(q["options"]):
-                symbols = ["▲", "◆", "●", "■"]
                 is_correct = (idx == q["correct"]) and room["state"] == "REVEAL"
                 if is_correct:
                     st.success(f"✓ **{symbols[idx]} {opt}** (CORRETA!)")
                 else:
-                    st.write(f"**{symbols[idx]}** {opt}")
+                    st.markdown(f"<div style='padding: 0.6rem 0.8rem; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; margin-bottom: 0.4rem; font-size: 1.05rem;'><b>{symbols[idx]}</b> {opt}</div>", unsafe_allow_html=True)
 
             if room["state"] == "REVEAL":
                 st.info(f"💡 **Explicação para a turma:** {q['explanation']}")
@@ -363,7 +454,7 @@ with tab_host:
             st.markdown("""
             <div style="text-align: center; margin-bottom: 2rem;">
                 <h1>🏆 PÓDIO DOS CAMPEÕES 🏆</h1>
-                <p style="color: #64748B; font-size: 1.2rem;">Mestres em Serigrafia e Rotogravura!</p>
+                <p style="color: #475569; font-size: 1.2rem;">Mestres em Serigrafia e Rotogravura!</p>
             </div>
             """, unsafe_allow_html=True)
 
@@ -374,10 +465,10 @@ with tab_host:
                 if len(sorted_ranking) > 1:
                     st.markdown(f"""
                     <div class="podium-box podium-silver">
-                        <div style="font-size: 2.5rem;">🥈</div>
-                        <h4>{sorted_ranking[1][0]}</h4>
-                        <div style="color: #64748B; font-weight: 700;">{sorted_ranking[1][1]} pts</div>
-                        <h2 style="color: #94A3B8; margin-top: 0.5rem;">2º Lugar</h2>
+                        <div style="font-size: 2.8rem;">🥈</div>
+                        <h4 style="margin: 0.3rem 0;">{sorted_ranking[1][0]}</h4>
+                        <div style="color: #475569; font-weight: 700;">{sorted_ranking[1][1]} pts</div>
+                        <h2 style="color: #64748B; margin-top: 0.5rem;">2º Lugar</h2>
                     </div>
                     """, unsafe_allow_html=True)
 
@@ -385,8 +476,8 @@ with tab_host:
                 if len(sorted_ranking) > 0:
                     st.markdown(f"""
                     <div class="podium-box podium-gold">
-                        <div style="font-size: 3rem;">👑</div>
-                        <h4>{sorted_ranking[0][0]}</h4>
+                        <div style="font-size: 3.2rem;">👑</div>
+                        <h4 style="margin: 0.3rem 0;">{sorted_ranking[0][0]}</h4>
                         <div style="color: #D97706; font-weight: 800; font-size: 1.2rem;">{sorted_ranking[0][1]} pts</div>
                         <h1 style="color: #F59E0B; margin-top: 0.5rem;">1º Lugar</h1>
                     </div>
@@ -396,10 +487,10 @@ with tab_host:
                 if len(sorted_ranking) > 2:
                     st.markdown(f"""
                     <div class="podium-box podium-bronze">
-                        <div style="font-size: 2.5rem;">🥉</div>
-                        <h4>{sorted_ranking[2][0]}</h4>
-                        <div style="color: #64748B; font-weight: 700;">{sorted_ranking[2][1]} pts</div>
-                        <h2 style="color: #FB923C; margin-top: 0.5rem;">3º Lugar</h2>
+                        <div style="font-size: 2.8rem;">🥉</div>
+                        <h4 style="margin: 0.3rem 0;">{sorted_ranking[2][0]}</h4>
+                        <div style="color: #475569; font-weight: 700;">{sorted_ranking[2][1]} pts</div>
+                        <h2 style="color: #EA580C; margin-top: 0.5rem;">3º Lugar</h2>
                     </div>
                     """, unsafe_allow_html=True)
 

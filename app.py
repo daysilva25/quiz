@@ -4,6 +4,7 @@ import time
 # ==============================================================================
 # QUIZ DE FIXAÇÃO: SERIGRAFIA & ROTOGRAVURA
 # Desenvolvido por Daiane Silva
+# Sistema Automático Estilo Kahoot (Pontuação por Velocidade & Pódio)
 # ==============================================================================
 
 st.set_page_config(
@@ -12,10 +13,9 @@ st.set_page_config(
     layout="centered"
 )
 
-# --- FORÇA TEMA CLARO, FUNDO BRANCO E CONTRASTE MÁXIMO ---
+# --- FORÇA TEMA CLARO, FUNDO BRANCO E MÁXIMA LEGIBILIDADE ---
 st.markdown("""
 <style>
-    /* Força fundo claro e texto escuro em TODA a aplicação */
     html, body, [data-testid="stAppViewContainer"], .stApp, main {
         background-color: #F8FAFC !important;
         background: #F8FAFC !important;
@@ -27,19 +27,19 @@ st.markdown("""
         background-color: #F8FAFC !important;
     }
 
-    /* Títulos em Preto / Ardósia de Alta Legibilidade */
+    /* Títulos em Preto/Escuro Nítido */
     h1, h2, h3, h4, [data-testid="stMarkdownContainer"] h1, [data-testid="stMarkdownContainer"] h2, [data-testid="stMarkdownContainer"] h3 {
         color: #0F172A !important;
         font-weight: 800 !important;
         letter-spacing: -0.5px !important;
     }
 
-    /* Todos os textos normais em escuro nítido */
+    /* Parágrafos e labels com alto contraste */
     p, span, label, div, [data-testid="stMarkdownContainer"] p {
         color: #1E293B !important;
     }
 
-    /* Card da Pergunta e Informações em Branco Puro */
+    /* Card Branco Limpo */
     .white-card {
         background-color: #FFFFFF !important;
         border: 2px solid #E2E8F0 !important;
@@ -82,7 +82,6 @@ st.markdown("""
         box-shadow: 0 6px 15px rgba(124, 58, 237, 0.12) !important;
     }
 
-    /* FORÇA A COR DO TEXTO DENTRO DOS BOTÕES A SER ESCURA */
     .stButton > button p, .stButton > button div, .stButton > button span {
         color: #0F172A !important;
         font-size: 1.15rem !important;
@@ -91,7 +90,7 @@ st.markdown("""
         text-align: left !important;
     }
 
-    /* Botão Principal Roxo (Entrar / Iniciar) */
+    /* Botão Primário Roxo */
     .stButton > button[kind="primary"] {
         background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%) !important;
         border: none !important;
@@ -112,9 +111,6 @@ st.markdown("""
         font-size: 1.1rem !important;
         font-weight: 600 !important;
     }
-    input::placeholder {
-        color: #94A3B8 !important;
-    }
 
     /* Abas Superiores */
     [data-baseweb="tab-list"] {
@@ -134,18 +130,18 @@ st.markdown("""
         box-shadow: 0 2px 6px rgba(0,0,0,0.06) !important;
     }
 
-    /* Pódio */
+    /* Pódio dos Campeões */
     .podium-box {
         background: #FFFFFF !important;
         border: 2px solid #E2E8F0 !important;
         border-radius: 16px !important;
         padding: 1.2rem !important;
         text-align: center !important;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.04) !important;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.06) !important;
     }
-    .podium-gold { border-top: 6px solid #F59E0B !important; }
-    .podium-silver { border-top: 6px solid #94A3B8 !important; }
-    .podium-bronze { border-top: 6px solid #FB923C !important; }
+    .podium-gold { border-top: 8px solid #F59E0B !important; }
+    .podium-silver { border-top: 8px solid #94A3B8 !important; }
+    .podium-bronze { border-top: 8px solid #FB923C !important; }
 
     /* Assinatura no Rodapé */
     .dev-signature {
@@ -160,7 +156,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- BASE DE PERGUNTAS (EMBUTIDA NO CÓDIGO) ---
+# --- BASE DE PERGUNTAS ---
 QUESTIONS = [
     {
         "theme": "Serigrafia",
@@ -172,7 +168,7 @@ QUESTIONS = [
             "Planográfico (grafismo e não-grafismo estão no mesmo nível)"
         ],
         "correct": 0,
-        "explanation": "Na serigrafia a matriz é permeável (malha de poliéster). A tinta passa apenas pelas áreas vazadas onde não há emulsão!"
+        "explanation": "Na serigrafia a matriz é permeável (malha de poliéster). A tinta vaza apenas pelas áreas abertas onde não há emulsão!"
     },
     {
         "theme": "Rotogravura",
@@ -184,7 +180,7 @@ QUESTIONS = [
             "Em um fotopolímero flexível em alto-relevo colado no cilindro"
         ],
         "correct": 1,
-        "explanation": "A rotogravura é um processo encavográfico (baixo-relevo). Os cilindros de aço e cobre possuem milhões de minúsculas células (alvéolos) que seguram a tinta."
+        "explanation": "A rotogravura é um processo encavográfico (baixo-relevo). Os cilindros de cobre possuem milhões de minúsculas células (alvéolos) que transferem a tinta."
     },
     {
         "theme": "Rotogravura",
@@ -196,7 +192,7 @@ QUESTIONS = [
             "Porque só funciona em papéis foscos e cartões de alta gramatura"
         ],
         "correct": 2,
-        "explanation": "A gravação de cilindros de rotogravura é cara, mas em tiragens de centenas de milhares ou milhões de metros, o custo unitário fica incrivelmente baixo com máxima velocidade!"
+        "explanation": "A gravação do cilindro tem custo inicial alto, mas em tiragens de milhões de metros o custo unitário fica incrivelmente baixo com máxima velocidade!"
     },
     {
         "theme": "Serigrafia",
@@ -208,7 +204,7 @@ QUESTIONS = [
             "Dispensa o uso de tintas líquidas, usando apenas calor"
         ],
         "correct": 1,
-        "explanation": "A serigrafia deposita muito mais tinta que os outros processos, gerando alta cobertura e cores vivas em praticamente qualquer suporte."
+        "explanation": "A serigrafia deposita muito mais tinta que outros processos, permitindo cores vivas e opacas em camisetas, canecas, vidros e acrílicos."
     },
     {
         "theme": "Duelo: Serigrafia vs Rotogravura",
@@ -220,293 +216,312 @@ QUESTIONS = [
             "Bastidor de madeira com presilhas"
         ],
         "correct": 1,
-        "explanation": "Pegadinha clássica! A Doctor Blade raspa o excesso na Rotogravura. Já o rodo de poliuretano é a ferramenta da Serigrafia!"
+        "explanation": "Pegadinha de prova! A Doctor Blade raspa o excesso do cilindro na Rotogravura. Já o rodo de poliuretano é da Serigrafia!"
     }
 ]
 
-# --- ESTADO COMPARTILHADO EM MEMÓRIA ---
+# --- ESTADO COMPARTILHADO EM MEMÓRIA (COMPARTILHADO POR TODA A TURMA) ---
 @st.cache_resource
-def get_room_state():
+def get_shared_room():
     return {
-        "state": "LOBBY",
-        "current_q": 0,
-        "q_start_time": time.time(),
-        "scores": {},
-        "answers": {}
+        "status": "LOBBY",         # LOBBY, RUNNING, PODIUM
+        "scores": {},              # {nome: pontuacao_acumulada}
+        "players": [],             # [nome1, nome2, ...]
+        "finished_players": {}     # {nome: total_pontos}
     }
 
-room = get_room_state()
+room = get_shared_room()
 
-# --- DUAS ABAS: CELULAR E TELÃO ---
 tab_player, tab_host = st.tabs(["📱 Jogar pelo Celular", "🖥️ Telão do Apresentador"])
 
 # ==============================================================================
-# 1. ABA DO JOGADOR (CELULAR)
+# 1. ABA DO JOGADOR (CELULAR) - 100% AUTOMÁTICO
 # ==============================================================================
 with tab_player:
     st.markdown('<div class="theme-badge">🎨 PRODUÇÃO GRÁFICA</div>', unsafe_allow_html=True)
     st.title("Quiz de Fixação")
     st.caption("Serigrafia & Rotogravura")
 
-    if "player_name" not in st.session_state:
-        st.session_state["player_name"] = ""
+    # Estados locais de sessão do aluno
+    if "p_name" not in st.session_state:
+        st.session_state["p_name"] = ""
+    if "q_index" not in st.session_state:
+        st.session_state["q_index"] = 0
+    if "q_start_time" not in st.session_state:
+        st.session_state["q_start_time"] = None
+    if "last_result" not in st.session_state:
+        st.session_state["last_result"] = None
+    if "quiz_finished" not in st.session_state:
+        st.session_state["quiz_finished"] = False
 
-    # Identificação do Jogador
-    if not st.session_state["player_name"]:
+    # PASSO 1: O ALUNO COLOCA O NOME
+    if not st.session_state["p_name"]:
         st.markdown("""
         <div class="white-card">
             <h3 style="margin-top: 0;">Bem-vindo(a) ao Quiz! 👋</h3>
-            <p style="color: #475569; font-size: 1rem; margin-bottom: 0;">Digite seu nome para participar:</p>
+            <p style="color: #475569; font-size: 1rem; margin-bottom: 0;">Digite seu nome para entrar na sala e disputar o pódio:</p>
         </div>
         """, unsafe_allow_html=True)
 
-        nome = st.text_input("Seu Nome ou Apelido:", max_chars=20, placeholder="Ex: Daiane Silva")
+        nome_digitado = st.text_input("Seu Nome ou Apelido:", max_chars=20, placeholder="Ex: Daiane Silva")
         if st.button("Entrar no Jogo 🚀", type="primary", use_container_width=True):
-            if nome.strip():
-                st.session_state["player_name"] = nome.strip()
-                if nome.strip() not in room["scores"]:
-                    room["scores"][nome.strip()] = 0
+            clean_name = nome_digitado.strip()
+            if clean_name:
+                st.session_state["p_name"] = clean_name
+                if clean_name not in room["players"]:
+                    room["players"].append(clean_name)
+                    room["scores"][clean_name] = 0
                 st.rerun()
             else:
                 st.warning("Por favor, digite seu nome!")
+
+    # ALUNO LOGADO
     else:
-        player_name = st.session_state["player_name"]
-        my_score = room["scores"].get(player_name, 0)
+        player_name = st.session_state["p_name"]
+        current_score = room["scores"].get(player_name, 0)
 
         # Barra do Jogador
-        col_p1, col_p2 = st.columns([2, 1])
-        with col_p1:
+        col1, col2 = st.columns([2, 1])
+        with col1:
             st.markdown(f"👤 Jogador: **{player_name}**")
-        with col_p2:
-            st.markdown(f"⭐ **{my_score} pts**")
+        with col2:
+            st.markdown(f"⭐ **{current_score} pts**")
 
-        # 1. Espera no Celular
-        if room["state"] == "LOBBY":
+        # Se o apresentador ainda não liberou o jogo
+        if room["status"] == "LOBBY":
             st.markdown("""
             <div class="white-card" style="text-align: center; padding: 2.5rem 1.5rem;">
                 <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">✨</div>
-                <h3 style="margin-bottom: 0.5rem;">Você está conectado!</h3>
-                <p style="color: #475569; font-size: 1.05rem;">Fique de olho no telão da sala. O quiz começará em instantes!</p>
+                <h3 style="margin-bottom: 0.5rem;">Você está na Sala de Espera!</h3>
+                <p style="color: #475569; font-size: 1.05rem;">
+                    Assim que o apresentador clicar em <b>Iniciar Quiz</b> no telão, suas perguntas vão começar!
+                </p>
             </div>
             """, unsafe_allow_html=True)
-            if st.button("🔄 Atualizar status", use_container_width=True):
+            if st.button("🔄 Atualizar para começar", use_container_width=True):
                 st.rerun()
 
-        # 2. Pergunta Ativa no Celular
-        elif room["state"] in ["QUESTION", "REVEAL"]:
-            q_idx = room["current_q"]
-            if q_idx < len(QUESTIONS):
-                q = QUESTIONS[q_idx]
+        # O JOGO ESTÁ LIBERADO!
+        elif room["status"] in ["RUNNING", "PODIUM"]:
+            q_i = st.session_state["q_index"]
+
+            # Se já respondeu todas as perguntas
+            if q_i >= len(QUESTIONS) or st.session_state["quiz_finished"]:
+                st.session_state["quiz_finished"] = True
+                room["finished_players"][player_name] = current_score
 
                 st.markdown(f"""
-                <div class="white-card">
-                    <span class="theme-badge">{q['theme']}</span>
-                    <h4 style="color: #6D28D9; margin-bottom: 0.3rem;">Pergunta {q_idx + 1} de {len(QUESTIONS)}</h4>
-                    <p style="font-size: 1.25rem; font-weight: 800; color: #0F172A; line-height: 1.45; margin: 0;">
-                        {q['question']}
-                    </p>
+                <div class="white-card" style="text-align: center; padding: 2.5rem 1.5rem;">
+                    <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🏁</div>
+                    <h2>Parabéns, {player_name}!</h2>
+                    <p style="color: #475569; font-size: 1.1rem;">Você concluiu todas as perguntas do Quiz!</p>
+                    <div style="font-size: 2.4rem; font-weight: 900; color: #7C3AED; margin: 1rem 0;">
+                        {current_score} pts
+                    </div>
+                    <p style="color: #64748B;">Olhe para o telão da sala para ver o <b>Pódio dos Campeões</b>!</p>
                 </div>
                 """, unsafe_allow_html=True)
 
-                q_answers = room["answers"].setdefault(q_idx, {})
-                already_answered = player_name in q_answers
+            # Perguntas ativas no celular do aluno
+            else:
+                q = QUESTIONS[q_i]
 
-                if room["state"] == "QUESTION" and not already_answered:
-                    st.markdown("<p style='font-weight: 700; color: #0F172A; font-size: 1.05rem;'>Selecione a resposta correta:</p>", unsafe_allow_html=True)
+                # Se acabou de responder, mostra o feedback imediato
+                if st.session_state["last_result"] is not None:
+                    res = st.session_state["last_result"]
+                    if res["is_correct"]:
+                        st.balloons()
+                        st.success(f"🎉 **Você Acertou!** (+{res['points']} pts em {res['time_taken']}s)")
+                    else:
+                        st.error(f"😅 **Não foi dessa vez!** (+0 pts)")
+
+                    st.markdown(f"""
+                    <div class="white-card" style="background: #F0FDF4 !important; border: 2px solid #86EFAC !important;">
+                        <strong style="color: #15803D; font-size: 1.05rem;">💡 Explicação Didática:</strong>
+                        <p style="color: #166534 !important; margin-top: 0.4rem; font-size: 1rem; line-height: 1.45;">
+                            {q['explanation']}
+                        </p>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+                    btn_next_text = "Ver Resultado Final 🏆" if q_i + 1 >= len(QUESTIONS) else "Próxima Pergunta ➡️"
+                    if st.button(btn_next_text, type="primary", use_container_width=True):
+                        st.session_state["q_index"] += 1
+                        st.session_state["last_result"] = None
+                        st.session_state["q_start_time"] = time.time()
+                        st.rerun()
+
+                # Pergunta para responder
+                else:
+                    if st.session_state["q_start_time"] is None:
+                        st.session_state["q_start_time"] = time.time()
+
+                    st.markdown(f"""
+                    <div class="white-card">
+                        <span class="theme-badge">{q['theme']}</span>
+                        <h4 style="color: #6D28D9; margin-bottom: 0.3rem;">Pergunta {q_i + 1} de {len(QUESTIONS)}</h4>
+                        <p style="font-size: 1.25rem; font-weight: 800; color: #0F172A; line-height: 1.45; margin: 0;">
+                            {q['question']}
+                        </p>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+                    st.markdown("<p style='font-weight: 700; color: #0F172A; font-size: 1.05rem;'>Selecione a opção correta rápido para pontuar mais:</p>", unsafe_allow_html=True)
                     symbols = ["🔴 [A]", "🔵 [B]", "🟡 [C]", "🟢 [D]"]
-                    for idx, opt_text in enumerate(q["options"]):
-                        btn_text = f"{symbols[idx]}  {opt_text}"
-                        if st.button(btn_text, key=f"opt_btn_{idx}", use_container_width=True):
-                            elapsed = time.time() - room["q_start_time"]
-                            remaining = max(0.0, 25.0 - elapsed)
-                            is_correct = (idx == q["correct"])
+
+                    for opt_idx, opt_text in enumerate(q["options"]):
+                        if st.button(f"{symbols[opt_idx]}  {opt_text}", key=f"q_{q_i}_btn_{opt_idx}", use_container_width=True):
+                            elapsed = time.time() - st.session_state["q_start_time"]
+                            is_correct = (opt_idx == q["correct"])
+
+                            # FÓRMULA OFICIAL KAHOOT:
+                            # Até 1000 pontos. Resposta rápida ganha ~980 pts. Resposta lenta ganha ~500 pts. Erro = 0 pts.
                             points = 0
                             if is_correct:
-                                ratio = min(1.0, remaining / 25.0)
-                                points = int(500 + 500 * ratio)
+                                time_limit = 25.0
+                                factor = 1.0 - ((min(elapsed, time_limit) / time_limit) / 2.0)
+                                points = int(1000 * factor)
                                 room["scores"][player_name] = room["scores"].get(player_name, 0) + points
 
-                            q_answers[player_name] = {
-                                "option": idx,
+                            st.session_state["last_result"] = {
+                                "is_correct": is_correct,
                                 "points": points,
-                                "correct": is_correct
+                                "time_taken": round(elapsed, 1)
                             }
                             st.rerun()
-
-                elif already_answered:
-                    ans = q_answers[player_name]
-                    if room["state"] == "QUESTION":
-                        st.info("✓ **Resposta registrada com sucesso!** Aguardando o apresentador revelar no telão...")
-                        if st.button("🔄 Atualizar tela", use_container_width=True):
-                            st.rerun()
-                    else:
-                        if ans["correct"]:
-                            st.balloons()
-                            st.success(f"🎉 **Você Acertou!** (+{ans['points']} pts)")
-                        else:
-                            st.error("😅 **Não foi dessa vez!** (+0 pts)")
-
-                        st.markdown(f"""
-                        <div class="white-card" style="background: #F0FDF4 !important; border: 2px solid #86EFAC !important;">
-                            <strong style="color: #15803D; font-size: 1.05rem;">💡 Explicação Didática:</strong>
-                            <p style="color: #166534 !important; margin-top: 0.4rem; font-size: 1rem; line-height: 1.45;">
-                                {q['explanation']}
-                            </p>
-                        </div>
-                        """, unsafe_allow_html=True)
-
-                        if st.button("🔄 Próxima Rodada", use_container_width=True):
-                            st.rerun()
-
-        # 3. Pódio Final no Celular
-        elif room["state"] == "PODIUM":
-            st.markdown("""
-            <div class="white-card" style="text-align: center; padding: 2.5rem 1.5rem;">
-                <div style="font-size: 3.5rem; margin-bottom: 0.5rem;">🏆</div>
-                <h2>Fim do Quiz!</h2>
-                <p style="color: #475569; font-size: 1.05rem;">Confira os grandes campeões no telão da sala!</p>
-            </div>
-            """, unsafe_allow_html=True)
-
-            sorted_ranking = sorted(room["scores"].items(), key=lambda x: x[1], reverse=True)
-            my_rank = next((idx + 1 for idx, (n, s) in enumerate(sorted_ranking) if n == player_name), 1)
-            st.metric("Sua Posição Final", f"{my_rank}º Lugar", f"{my_score} pts")
 
     st.markdown('<div class="dev-signature">✨ Desenvolvido por Daiane Silva</div>', unsafe_allow_html=True)
 
 # ==============================================================================
-# 2. ABA DO TELÃO (APRESENTADOR)
+# 2. ABA DO TELÃO (APRESENTADOR) - SÓ CONEXÕES E PÓDIO!
 # ==============================================================================
 with tab_host:
     st.markdown('<div class="theme-badge">🖥️ CONTROLE DO TELÃO</div>', unsafe_allow_html=True)
-    st.title("Painel do Apresentador")
+    st.title("Painel do Telão")
 
-    pin = st.text_input("Digite o PIN do Apresentador:", type="password", key="pin_host")
+    pin = st.text_input("PIN do Apresentador:", type="password", key="pin_host")
 
     if pin != "2026":
-        st.info("Digite o código PIN `2026` para gerenciar a apresentação.")
+        st.info("Digite o PIN `2026` para gerenciar o telão da apresentação.")
     else:
-        st.success("Modo Apresentador Liberado!")
+        st.success("Modo Telão Ativo!")
 
-        c1, c2, c3 = st.columns(3)
-        with c1:
-            if st.button("🚀 Iniciar Pergunta", use_container_width=True, type="primary"):
-                room["state"] = "QUESTION"
-                room["q_start_time"] = time.time()
-                st.rerun()
-        with c2:
-            if st.button("👁️ Revelar Resposta", use_container_width=True):
-                room["state"] = "REVEAL"
-                st.rerun()
-        with c3:
-            if st.button("➡️ Avançar / Pódio", use_container_width=True):
-                if room["current_q"] + 1 < len(QUESTIONS):
-                    room["current_q"] += 1
-                    room["state"] = "QUESTION"
-                    room["q_start_time"] = time.time()
-                else:
-                    room["state"] = "PODIUM"
-                st.rerun()
-
-        st.divider()
-
-        if room["state"] == "LOBBY":
+        # 1. TELA DE ENTRADA / ESPERA
+        if room["status"] == "LOBBY":
             st.markdown("""
             <div class="white-card" style="text-align: center; padding: 2rem;">
-                <h2 style="margin-top: 0;">🎨 Quiz de Fixação: Serigrafia vs Rotogravura</h2>
-                <p style="color: #475569; font-size: 1.15rem; margin: 0.8rem 0;">
-                    Acessem pelo celular e entrem na aba <b>"📱 Jogar pelo Celular"</b>!
+                <h1 style="font-size: 1.8rem; margin-top: 0;">🎨 Quiz de Fixação: Serigrafia vs Rotogravura</h1>
+                <p style="color: #475569; font-size: 1.2rem; margin: 0.8rem 0;">
+                    Acessem o link pelo celular e entrem na aba <b>"📱 Jogar pelo Celular"</b>!
                 </p>
-                <div style="font-size: 1.4rem; font-weight: 800; color: #7C3AED; background: #EDE9FE; display: inline-block; padding: 0.5rem 1.5rem; border-radius: 12px; margin-top: 0.5rem;">
-                    Código PIN: 2026
+                <div style="font-size: 1.5rem; font-weight: 800; color: #7C3AED; background: #EDE9FE; display: inline-block; padding: 0.6rem 1.8rem; border-radius: 14px; margin-top: 0.5rem;">
+                    Código da Sala: 2026
                 </div>
             </div>
             """, unsafe_allow_html=True)
 
-            players_count = len(room["scores"])
-            st.write(f"👥 **{players_count} Aluno(s) conectado(s):**")
-            if room["scores"]:
-                st.write(", ".join([f"`{name}`" for name in room["scores"].keys()]))
+            connected_count = len(room["players"])
+            st.markdown(f"### 👥 Alunos Conectados: **{connected_count}**")
 
-        elif room["state"] in ["QUESTION", "REVEAL"]:
-            q = QUESTIONS[room["current_q"]]
-            st.markdown(f"""
-            <div class="white-card">
-                <span class="theme-badge">{q['theme']}</span>
-                <h3 style="color: #6D28D9; margin-bottom: 0.3rem;">Pergunta {room['current_q'] + 1} de {len(QUESTIONS)}</h3>
-                <h2 style="color: #0F172A; line-height: 1.4; margin: 0;">{q['question']}</h2>
+            if room["players"]:
+                st.write(", ".join([f"`{name}`" for name in room["players"]]))
+            else:
+                st.caption("Aguardando os alunos entrarem...")
+
+            st.write("")
+            if st.button("🚀 INICIAR QUIZ (Liberar para a turma responder)", type="primary", use_container_width=True):
+                room["status"] = "RUNNING"
+                st.rerun()
+
+        # 2. TELA DURANTE O JOGO (ACOMPANHAMENTO AO VIVO)
+        elif room["status"] == "RUNNING":
+            st.markdown("""
+            <div class="white-card" style="text-align: center; padding: 1.5rem;">
+                <h2 style="margin: 0; color: #7C3AED;">🎮 Quiz em Andamento!</h2>
+                <p style="color: #475569; font-size: 1.05rem; margin-top: 0.5rem;">
+                    A turma está respondendo as perguntas no celular com pontuação por agilidade.
+                </p>
             </div>
             """, unsafe_allow_html=True)
 
-            symbols = ["🔴 [A]", "🔵 [B]", "🟡 [C]", "🟢 [D]"]
-            for idx, opt in enumerate(q["options"]):
-                is_correct = (idx == q["correct"]) and room["state"] == "REVEAL"
-                if is_correct:
-                    st.success(f"✓ **{symbols[idx]} {opt}** (CORRETA!)")
-                else:
-                    st.markdown(f"<div style='padding: 0.6rem 0.8rem; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 10px; margin-bottom: 0.4rem; font-size: 1.05rem;'><b>{symbols[idx]}</b> {opt}</div>", unsafe_allow_html=True)
+            fin_count = len(room["finished_players"])
+            tot_count = len(room["players"])
+            st.info(f"📊 **{fin_count} de {tot_count}** alunos já concluíram todas as perguntas.")
 
-            if room["state"] == "REVEAL":
-                st.info(f"💡 **Explicação para a turma:** {q['explanation']}")
+            # Placar em tempo real
+            st.markdown("### ⭐ Ranking em Tempo Real:")
+            sorted_scores = sorted(room["scores"].items(), key=lambda x: x[1], reverse=True)
+            for idx, (p_name, s) in enumerate(sorted_scores[:5]):
+                medal = "🥇" if idx == 0 else "🥈" if idx == 1 else "🥉" if idx == 2 else f"{idx+1}º"
+                st.write(f"{medal} **{p_name}** — `{s} pts`")
 
-        elif room["state"] == "PODIUM":
+            st.write("")
+            if st.button("🏆 EXIBIR PÓDIO DOS CAMPEÕES", type="primary", use_container_width=True):
+                room["status"] = "PODIUM"
+                st.rerun()
+
+        # 3. TELA DO PÓDIO FINAL (ESTILO KAHOOT)
+        elif room["status"] == "PODIUM":
             st.balloons()
             st.markdown("""
             <div style="text-align: center; margin-bottom: 2rem;">
-                <h1>🏆 PÓDIO DOS CAMPEÕES 🏆</h1>
-                <p style="color: #475569; font-size: 1.2rem;">Mestres em Serigrafia e Rotogravura!</p>
+                <h1 style="font-size: 2.5rem;">🏆 PÓDIO DOS CAMPEÕES 🏆</h1>
+                <p style="color: #475569; font-size: 1.25rem;">Mestres em Serigrafia e Rotogravura!</p>
             </div>
             """, unsafe_allow_html=True)
 
             sorted_ranking = sorted(room["scores"].items(), key=lambda x: x[1], reverse=True)
             col_p2, col_p1, col_p3 = st.columns(3)
 
+            # 2º Lugar
             with col_p2:
                 if len(sorted_ranking) > 1:
                     st.markdown(f"""
                     <div class="podium-box podium-silver">
-                        <div style="font-size: 2.8rem;">🥈</div>
-                        <h4 style="margin: 0.3rem 0;">{sorted_ranking[1][0]}</h4>
-                        <div style="color: #475569; font-weight: 700;">{sorted_ranking[1][1]} pts</div>
+                        <div style="font-size: 3rem;">🥈</div>
+                        <h3 style="margin: 0.3rem 0; font-size: 1.25rem;">{sorted_ranking[1][0]}</h3>
+                        <div style="color: #475569; font-weight: 700; font-size: 1.1rem;">{sorted_ranking[1][1]} pts</div>
                         <h2 style="color: #64748B; margin-top: 0.5rem;">2º Lugar</h2>
                     </div>
                     """, unsafe_allow_html=True)
 
+            # 1º Lugar
             with col_p1:
                 if len(sorted_ranking) > 0:
                     st.markdown(f"""
                     <div class="podium-box podium-gold">
                         <div style="font-size: 3.2rem;">👑</div>
-                        <h4 style="margin: 0.3rem 0;">{sorted_ranking[0][0]}</h4>
-                        <div style="color: #D97706; font-weight: 800; font-size: 1.2rem;">{sorted_ranking[0][1]} pts</div>
-                        <h1 style="color: #F59E0B; margin-top: 0.5rem;">1º Lugar</h1>
+                        <h2 style="margin: 0.3rem 0; font-size: 1.45rem; color: #D97706;">{sorted_ranking[0][0]}</h2>
+                        <div style="color: #D97706; font-weight: 900; font-size: 1.3rem;">{sorted_ranking[0][1]} pts</div>
+                        <h1 style="color: #F59E0B; margin-top: 0.5rem; font-size: 2rem;">1º Lugar</h1>
                     </div>
                     """, unsafe_allow_html=True)
 
+            # 3º Lugar
             with col_p3:
                 if len(sorted_ranking) > 2:
                     st.markdown(f"""
                     <div class="podium-box podium-bronze">
-                        <div style="font-size: 2.8rem;">🥉</div>
-                        <h4 style="margin: 0.3rem 0;">{sorted_ranking[2][0]}</h4>
-                        <div style="color: #475569; font-weight: 700;">{sorted_ranking[2][1]} pts</div>
+                        <div style="font-size: 3rem;">🥉</div>
+                        <h3 style="margin: 0.3rem 0; font-size: 1.25rem;">{sorted_ranking[2][0]}</h3>
+                        <div style="color: #475569; font-weight: 700; font-size: 1.1rem;">{sorted_ranking[2][1]} pts</div>
                         <h2 style="color: #EA580C; margin-top: 0.5rem;">3º Lugar</h2>
                     </div>
                     """, unsafe_allow_html=True)
 
-        st.markdown("### 📊 Classificação Geral da Turma")
-        ranking = sorted(room["scores"].items(), key=lambda x: x[1], reverse=True)
-        if ranking:
-            for i, (name, pts) in enumerate(ranking):
-                st.write(f"**{i+1}º** {name} — `{pts} pts`")
-        else:
-            st.caption("Nenhum participante pontuou ainda.")
+            st.divider()
 
-        if st.button("🔄 Resetar Quiz Completo"):
-            room["scores"] = {}
-            room["answers"] = {}
-            room["current_q"] = 0
-            room["state"] = "LOBBY"
-            st.rerun()
+            # Classificação Geral
+            st.markdown("### 📊 Classificação Geral da Turma:")
+            for i, (name, pts) in enumerate(sorted_ranking):
+                st.write(f"**{i+1}º** {name} — `{pts} pts`")
+
+            st.write("")
+            if st.button("🔄 Reiniciar Jogo para Outra Turma"):
+                room["status"] = "LOBBY"
+                room["scores"] = {}
+                room["players"] = []
+                room["finished_players"] = {}
+                st.rerun()
 
     st.markdown('<div class="dev-signature">✨ Desenvolvido por Daiane Silva</div>', unsafe_allow_html=True)
